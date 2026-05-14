@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomForWords | Shashank</title>
+    <meta name="description"
+        content="A space where emotions exist without correction. The official author website of Shashank (The Unsaid Tone), featuring the 'The Boy Who Begged' series.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #0D0B08;
+            --ink-soft: #1C1814;
+            --cream: #F5EED8;
+            --cream-dark: #E8DFC4;
+            --gold: #C49A3C;
+            --gold-bright: #E8B84B;
+            --gold-dim: #8A6A20;
+            --amber: #D47C20;
+            --warm-white: #FDF8EE;
+            --charcoal: #2A2218;
+        }
+
+        /* ----------------------------------------------------
+           GLOBAL & RESETS
+        ---------------------------------------------------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            /* Hide default cursor */
+        }
+
+        body,
+        html {
+            background: var(--ink);
+            color: var(--cream);
+            font-family: 'EB Garamond', serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--ink);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(196, 154, 60, 0.4);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(196, 154, 60, 0.7);
+        }
+
+        ::selection {
+            background: rgba(196, 154, 60, 0.3);
+            color: var(--cream);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .cormorant {
+            font-family: 'Cormorant', serif;
+            font-weight: 400;
+        }
+
+        .space-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        .cinzel {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .gold-text {
+            color: var(--gold);
+        }
+
+        .cream-text {
+            color: var(--cream);
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            cursor: none;
+        }
+
+        button,
+        input,
+        textarea {
+            cursor: none;
+            font-family: inherit;
+        }
+
+        section {
+            position: relative;
+        }
+
+        .container {
+            padding: 7rem 5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* ----------------------------------------------------
+           PARTICLES & CURSOR
+        ---------------------------------------------------- */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        #cursor-glow {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(196, 154, 60, 0.3) 0%, transparent 70%);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+
+        #cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+
+        /* Scroll Reveal Utility */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px) rotateX(8deg);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg);
+        }
+
+        /* Magnetic Utility */
+        .magnetic {
+            display: inline-block;
+            transition: transform 0.1s linear;
+            will-change: transform;
+        }
+
+        /* ----------------------------------------------------
+           NAVIGATION
+        ---------------------------------------------------- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem 5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2000;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border-bottom: 1px solid transparent;
+        }
+
+        nav.scrolled {
+            background: rgba(13, 11, 8, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(196, 154, 60, 0.15);
+            padding: 0.8rem 5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: text-shadow 0.3s;
+        }
+
+        .logo:hover {
+            text-shadow: 0 0 15px rgba(196, 154, 60, 0.5);
+        }
+
+        .logo svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--gold);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            color: var(--cream);
+        }
+
+        .logo-text span.italic {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-link {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gold);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 11, 8, 0.98);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .mobile-menu.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-family: 'Cormorant', serif;
+            font-size: 3rem;
+            color: var(--cream);
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 2rem;
+        }
+
+        /* ----------------------------------------------------
+           HERO SECTION
+        ---------------------------------------------------- */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 5rem;
+        }
+
+        #layer-1 {
+            position: absolute;
+            right: -5%;
+            bottom: -10%;
+            font-family: 'Cormorant', serif;
+            font-size: 35vw;
+            color: rgba(196, 154, 60, 0.04);
+            letter-spacing: -0.05em;
+            line-height: 1;
+            pointer-events: none;
+            z-index: 1;
+            will-change: transform;
+        }
+
+        #layer-2 {
+            position: absolute;
+            right: 5%;
+            top: 15%;
+            width: 500px;
+            height: 500px;
+            opacity: 0.06;
+            animation: rotate 30s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #layer-3 {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .float-flower {
+            position: absolute;
+            color: var(--gold);
+            opacity: 0.4;
+            animation: floatFlower 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatFlower {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-40px) rotate(20deg);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .entry-tag {
+            font-size: 0.65rem;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 5.5rem;
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-line {
+            display: block;
+            opacity: 0;
+            transform: translateY(60px);
+            filter: blur(8px);
+            animation: fadeUpBlur 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-line:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .hero-line:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .hero-line:nth-child(3) {
+            animation-delay: 0.7s;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(253, 248, 238, 0.6);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.9s;
+        }
+
+        .hero-byline {
+            font-size: 0.68rem;
+            color: var(--gold-dim);
+            letter-spacing: 0.25em;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.1s;
+        }
+
+        .hero-line-sep {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: scaleIn 1s forwards 1.2s;
+            transform-origin: left;
+        }
+
+        .cta-btn {
+            padding: 1rem 2.5rem;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--cream);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeUp 1s forwards 1.3s;
+            transition: color 0.4s;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: -1;
+        }
+
+        .cta-btn:hover {
+            color: var(--ink);
+        }
+
+        .cta-btn:hover::before {
+            transform: scaleX(1);
+        }
+
+        .cta-btn-writing {
+            color: var(--ink) !important;
+            border-color: var(--ink) !important;
+        }
+
+        .cta-btn-writing::before {
+            background: var(--ink) !important;
+        }
+
+        .cta-btn-writing:hover {
+            color: var(--gold) !important;
+        }
+
+        @keyframes fadeUpBlur {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 3D Book */
+        #layer-5 {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45%;
+            display: flex;
+            justify-content: center;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .book-3d-wrapper {
+            perspective: 1200px;
+        }
+
+        .book-3d {
+            width: 280px;
+            height: 380px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(-25deg) rotateX(5deg);
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .book-3d-wrapper:hover .book-3d {
+            transform: rotateY(-15deg) rotateX(2deg) scale(1.04);
+        }
+
+        .book-front {
+            position: absolute;
+            inset: 0;
+            background: #0D0B08;
+            border: 1px solid rgba(196, 154, 60, 0.3);
+            box-shadow: -20px 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(196, 154, 60, 0.08), inset 0 0 60px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        .book-icon {
+            font-size: 3rem;
+            filter: drop-shadow(0 0 10px rgba(196, 154, 60, 0.5));
+            margin-bottom: 1rem;
+        }
+
+        .book-title-1 {
+            font-size: 2rem;
+            font-style: italic;
+            line-height: 1;
+        }
+
+        .book-title-2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .book-sep {
+            width: 40px;
+            height: 1px;
+            background: rgba(196, 154, 60, 0.5);
+            margin: 0.8rem 0;
+        }
+
+        .book-author {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .book-quote {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: rgba(245, 238, 216, 0.8);
+            margin: 1.5rem 0;
+            line-height: 1.4;
+        }
+
+        .book-footer {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--gold-dim);
+            letter-spacing: 0.3em;
+            position: absolute;
+            bottom: 1.5rem;
+        }
+
+        .book-spine {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(to right, #1a1208, #2a1e0a);
+            transform-origin: left;
+            transform: rotateY(-90deg);
+            border-right: 1px solid rgba(196, 154, 60, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-spine-text {
+            transform: rotate(180deg);
+            writing-mode: vertical-rl;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--gold);
+            white-space: nowrap;
+        }
+
+        .book-shadow {
+            position: absolute;
+            bottom: -30px;
+            left: 10%;
+            width: 80%;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+            filter: blur(15px);
+            transform: rotateX(90deg) translateZ(-15px);
+        }
+
+        /* ----------------------------------------------------
+           MARQUEE
+        ---------------------------------------------------- */
+        .marquee {
+            background: var(--gold);
+            padding: 0.8rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            width: 100vw;
+            position: relative;
+        }
+
+        .marquee-inner {
+            display: flex;
+            flex-shrink: 0;
+            animation: marquee 25s linear infinite;
+        }
+
+        .marquee-text {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 0.85rem;
+            color: var(--ink);
+            letter-spacing: 0.15em;
+            padding-right: 2rem;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* ----------------------------------------------------
+           ABOUT SECTION
+        ---------------------------------------------------- */
+        .about-section {
+            background: #0F0D0A;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .portrait-frame {
+            width: 400px;
+            height: 500px;
+            position: relative;
+            border: 1px solid rgba(196, 154, 60, 0.15);
+            background: #1a1510;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .fingerprint-svg {
+            width: 300px;
+            height: 360px;
+        }
+
+        .frame-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(transparent, #0F0D0A);
+        }
+
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--gold);
+            border-style: solid;
+            opacity: 0.5;
+        }
+
+        .c-tl {
+            top: 15px;
+            left: 15px;
+            border-width: 1px 0 0 1px;
+        }
+
+        .c-tr {
+            top: 15px;
+            right: 15px;
+            border-width: 1px 1px 0 0;
+        }
+
+        .c-bl {
+            bottom: 15px;
+            left: 15px;
+            border-width: 0 0 1px 1px;
+        }
+
+        .c-br {
+            bottom: 15px;
+            right: 15px;
+            border-width: 0 1px 1px 0;
+        }
+
+        .frame-txt-top {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--gold);
+            opacity: 0.4;
+        }
+
+        .frame-txt-bot {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--gold);
+            opacity: 0.4;
+            z-index: 10;
+        }
+
+        .about-quote-card {
+            background: rgba(196, 154, 60, 0.08);
+            border: 1px solid rgba(196, 154, 60, 0.2);
+            border-left: 3px solid var(--gold);
+            padding: 1.8rem 2rem;
+            position: relative;
+            margin-top: -40px;
+            margin-left: 40px;
+            z-index: 5;
+        }
+
+        .quote-mark {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            font-size: 6rem;
+            color: var(--gold);
+            opacity: 0.2;
+            line-height: 1;
+            font-family: 'Cormorant', serif;
+        }
+
+        .quote-text {
+            position: relative;
+            font-size: 1.05rem;
+            font-style: italic;
+            color: rgba(245, 238, 216, 0.8);
+            line-height: 1.6;
+            z-index: 2;
+            margin-bottom: 1rem;
+        }
+
+        .quote-attr {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--gold-dim);
+        }
+
+        .about-content {
+            padding-left: 2rem;
+        }
+
+        .section-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-tag::before {
+            content: '────';
+            letter-spacing: -1px;
+        }
+
+        .about-name {
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+
+        .about-pen {
+            font-size: 1rem;
+            font-style: italic;
+            color: var(--gold);
+            margin-bottom: 2rem;
+        }
+
+        .about-rule {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin-bottom: 2rem;
+        }
+
+        .about-p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: rgba(245, 238, 216, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2.5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid rgba(196, 154, 60, 0.2);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            color: var(--gold);
+            font-family: 'Cormorant', serif;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(245, 238, 216, 0.5);
+        }
+
+        /* ----------------------------------------------------
+           BOOKS SECTION
+        ---------------------------------------------------- */
+        .books-section {
+            background: var(--ink);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .header-div {
+            font-size: 0.8rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .header-title {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-sub {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: rgba(245, 238, 216, 0.6);
+        }
+
+        .bc-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1400px;
+            margin: 4rem auto 0;
+        }
+
+        .bc-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bc-col-left {
+            text-align: left;
+        }
+
+        .bc-col-right {
+            text-align: left;
+        }
+
+        .bc-center {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 1.5rem;
+            perspective: 1200px;
+            padding: 0 1rem;
+        }
+
+        .bc-book-cover {
+            width: 240px;
+            height: 360px;
+            object-fit: cover;
+            border-radius: 3px 5px 5px 3px;
+            box-shadow:
+                -20px 20px 40px rgba(0, 0, 0, 0.8),
+                inset 4px 0 12px rgba(255, 255, 255, 0.1),
+                inset -2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .bc-book-1 {
+            transform: rotateY(-15deg);
+        }
+
+        .bc-book-2 {
+            transform: rotateY(-5deg);
+        }
+
+        .bc-center:hover .bc-book-1 {
+            transform: rotateY(-20deg) scale(1.02);
+        }
+
+        .bc-center:hover .bc-book-2 {
+            transform: rotateY(-10deg) scale(1.02);
+        }
+
+        .bc-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .bc-title {
+            font-size: 2rem;
+            color: var(--cream);
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
+        }
+
+        .bc-series {
+            color: var(--gold-dim);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .bc-desc {
+            color: rgba(245, 238, 216, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .gold-btn {
+            background: linear-gradient(to right, rgba(196, 154, 60, 0.15), rgba(196, 154, 60, 0.05));
+            border: 1px solid rgba(196, 154, 60, 0.3);
+            text-align: center;
+            display: inline-block;
+            width: fit-content;
+            padding: 1rem 2rem;
+            color: var(--gold);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .gold-btn:hover {
+            background: rgba(196, 154, 60, 0.8);
+            color: var(--ink);
+            border-color: rgba(196, 154, 60, 1);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .bc-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .bc-center {
+                order: -1;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* ----------------------------------------------------
+           POEM INTERLUDE
+        ---------------------------------------------------- */
+        .poem-section {
+            min-height: 80vh;
+            background: #0F0D0A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 5rem;
+        }
+
+        .poem-bg-quote {
+            position: absolute;
+            font-size: 25vw;
+            font-family: 'Cormorant', serif;
+            line-height: 1;
+            color: var(--gold);
+            opacity: 0.04;
+            top: 50%;
+            transform: translateY(-30%);
+            pointer-events: none;
+        }
+
+        .pq-left {
+            left: 5%;
+        }
+
+        .pq-right {
+            right: 5%;
+        }
+
+        .poem-content {
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .poem-tag {
+            font-family: 'Space Mono', monospace;
+            color: var(--gold);
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            margin-bottom: 3rem;
+        }
+
+        .poem-line {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: rgba(245, 238, 216, 0.8);
+            line-height: 2.5;
+            font-style: italic;
+        }
+
+        .poem-break {
+            height: 2.5rem;
+        }
+
+        .poem-sig {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            margin-top: 3rem;
+        }
+
+        .poem-icon {
+            font-size: 1.5rem;
+            opacity: 0.4;
+            margin-top: 1.5rem;
+            display: block;
+        }
+
+        /* ----------------------------------------------------
+           FEATURED WRITING
+        ---------------------------------------------------- */
+        .writing-section {
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+        .writing-grid {
+            display: grid;
+            grid-template-columns: 55% 45%;
+            gap: 5rem;
+            align-items: stretch;
+        }
+
+        .writing-left {
+            padding-right: 2rem;
+        }
+
+        .writing-tag {
+            font-family: 'Space Mono', monospace;
+            color: var(--gold);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .writing-title {
+            font-size: 3.2rem;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .writing-title-italic {
+            font-style: italic;
+            color: var(--gold-dim);
+            display: block;
+        }
+
+        .writing-inspire {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            color: #7a756b;
+            margin-bottom: 2rem;
+        }
+
+        .writing-rule {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin-bottom: 2.5rem;
+        }
+
+        .writing-p {
+            font-size: 1.1rem;
+            color: var(--ink-soft);
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .writing-right {
+            position: relative;
+        }
+
+        .writing-card-container {
+            height: 100%;
+            border: 1px solid rgba(196, 154, 60, 0.3);
+            padding: 10px;
+            transition: all 0.5s ease;
+        }
+
+        .writing-card-container:hover {
+            padding: 0px;
+            border-color: transparent;
+        }
+
+        .writing-card {
+            background: var(--ink);
+            height: 100%;
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 3px solid var(--gold);
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .writing-card-container:hover .writing-card {
+            transform: translateY(-15px) rotateZ(1deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(196, 154, 60, 0.15);
+        }
+
+        .w-quote-mark {
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            font-size: 7rem;
+            font-family: 'Cormorant', serif;
+            color: var(--gold);
+            opacity: 0.15;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .w-quote {
+            position: relative;
+            font-size: 1.25rem;
+            font-style: italic;
+            color: rgba(245, 238, 216, 0.85);
+            line-height: 1.7;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+        .w-attr {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--gold-bright);
+            line-height: 1.6;
+        }
+
+        .w-attr span {
+            display: block;
+            opacity: 0.6;
+        }
+
+        .w-icon {
+            margin-top: 2rem;
+            color: var(--gold);
+            opacity: 0.5;
+            font-size: 1.2rem;
+        }
+
+        /* ----------------------------------------------------
+           MUSIC SECTION
+        ---------------------------------------------------- */
+        .music-section {
+            background: radial-gradient(ellipse at 20% 60%, rgba(180, 100, 20, 0.12) 0%, #080604 60%);
+        }
+
+        .music-grid {
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .record-container {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .vinyl-record {
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            margin: 10px auto;
+            background: repeating-radial-gradient(#1a1208 0%, #0a0806 2%, #1a1208 4%, #0a0806 6%);
+            box-shadow: 0 0 0 2px rgba(196, 154, 60, 0.15), 0 30px 80px rgba(0, 0, 0, 0.9);
+            animation: spin 8s linear infinite;
+            animation-play-state: paused;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .album-label {
+            width: 140px;
+            height: 140px;
+            background: #1C1814;
+            border-radius: 50%;
+            border: 1px solid rgba(196, 154, 60, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .al-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .al-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.45rem;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+
+        .al-author {
+            font-family: 'Cormorant', serif;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--cream);
+            margin-bottom: 0.3rem;
+        }
+
+        .al-year {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--gold-dim);
+        }
+
+        .al-hole {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--ink);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(0, 0, 0, 0.5);
+        }
+
+        .record-reflection {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, rgba(196, 154, 60, 0.05), transparent);
+            transform: scaleY(-0.3);
+            filter: blur(5px);
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        .music-title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .music-desc {
+            font-size: 1.05rem;
+            color: rgba(245, 238, 216, 0.55);
+            line-height: 1.85;
+            margin-bottom: 3rem;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .meta-item {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            color: rgba(245, 238, 216, 0.6);
+        }
+
+        .meta-item span {
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .audio-player {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(196, 154, 60, 0.2);
+            padding: 2rem;
+            border-radius: 4px;
+        }
+
+        .player-top {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        .play-pause-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .play-pause-btn:hover {
+            transform: scale(1.08);
+            filter: brightness(1.1);
+        }
+
+        .play-pause-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .song-info {
+            flex: 1;
+        }
+
+        .si-title {
+            font-family: 'Cormorant', serif;
+            font-size: 1.1rem;
+            color: var(--cream);
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .si-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        .song-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(245, 238, 216, 0.4);
+        }
+
+        .progress-track {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            width: 0%;
+            position: relative;
+            transition: width 0.1s linear;
+        }
+
+        .progress-handle {
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: absolute;
+            right: -5px;
+            top: -3.5px;
+            box-shadow: 0 0 10px rgba(196, 154, 60, 0.5);
+        }
+
+        .waveform-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 48px;
+            gap: 4px;
+        }
+
+        .waveform-bar {
+            width: 4px;
+            border-radius: 2px;
+            background: var(--gold);
+            opacity: 0.25;
+            height: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .waveform-bar.playing {
+            animation: dance ease-in-out infinite alternate;
+            opacity: 0.8;
+        }
+
+        @keyframes dance {
+            0% {
+                height: 4px;
+            }
+
+            100% {
+                height: var(--dance-h);
+            }
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ----------------------------------------------------
+           CONNECT SECTION
+        ---------------------------------------------------- */
+        .connect-section {
+            background: var(--ink);
+        }
+
+        .connect-grid {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 7rem;
+            align-items: center;
+        }
+
+        .connect-left {
+            position: relative;
+        }
+
+        .c-bg-quote {
+            position: absolute;
+            font-size: 15rem;
+            font-family: 'Cormorant', serif;
+            color: var(--gold);
+            opacity: 0.04;
+            top: -5rem;
+            left: -2rem;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .connect-title {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .connect-title span {
+            font-style: italic;
+            color: var(--gold);
+            display: block;
+        }
+
+        .connect-p {
+            font-size: 1.1rem;
+            color: rgba(245, 238, 216, 0.55);
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+            max-width: 90%;
+        }
+
+        .email-link {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--gold);
+            letter-spacing: 0.08em;
+            display: inline-block;
+            margin-top: 2rem;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .email-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0%;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.4s ease;
+        }
+
+        .email-link:hover::after {
+            width: 100%;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .social-icon {
+            color: rgba(245, 238, 216, 0.6);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: 1px solid rgba(196, 154, 60, 0.2);
+            border-radius: 50%;
+        }
+
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--ink);
+            background: var(--gold);
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(196, 154, 60, 0.2);
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(196, 154, 60, 0.15);
+            padding: 3rem;
+            border-radius: 4px;
+        }
+
+        .form-title {
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-sub {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: rgba(245, 238, 216, 0.35);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-sep {
+            width: 30px;
+            height: 1px;
+            background: var(--gold);
+            margin-bottom: 2.5rem;
+        }
+
+        .field-group {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(196, 154, 60, 0.2);
+            padding: 0.5rem 0;
+            color: var(--cream);
+            font-family: 'EB Garamond', serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+
+        .form-input:focus {
+            border-bottom-color: var(--gold);
+            box-shadow: 0 1px 0 rgba(196, 154, 60, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: transparent;
+        }
+
+        .field-label {
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            color: rgba(245, 238, 216, 0.25);
+            font-style: italic;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-input:focus~.field-label,
+        .form-input:not(:placeholder-shown)~.field-label {
+            transform: translateY(-22px);
+            font-size: 0.65rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--gold);
+            font-style: normal;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 52px;
+            background: transparent;
+            border: 1px solid rgba(196, 154, 60, 0.4);
+            color: var(--gold);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: color 0.4s;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: -1;
+        }
+
+        .submit-btn:hover {
+            color: var(--ink);
+        }
+
+        .submit-btn:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* ----------------------------------------------------
+           FOOTER
+        ---------------------------------------------------- */
+        footer {
+            background: #080604;
+            border-top: 1px solid rgba(196, 154, 60, 0.1);
+            padding: 4rem 5rem 3rem 5rem;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .f-logo {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.5rem;
+            color: rgba(245, 238, 216, 0.7);
+        }
+
+        .f-icon {
+            font-size: 1.5rem;
+            opacity: 0.4;
+        }
+
+        .f-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .f-link {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: rgba(245, 238, 216, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+        }
+
+        .f-link:hover {
+            color: var(--gold);
+        }
+
+        .f-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(196, 154, 60, 0.08);
+            margin-bottom: 2.5rem;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .f-copy {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: rgba(245, 238, 216, 0.2);
+        }
+
+        .f-tagline {
+            font-family: 'Cormorant', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: rgba(196, 154, 60, 0.4);
+        }
+
+        .f-pub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: rgba(245, 238, 216, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ----------------------------------------------------
+           RESPONSIVE
+        ---------------------------------------------------- */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 5rem 3rem;
+            }
+
+            nav {
+                padding: 1.2rem 3rem;
+            }
+
+            nav.scrolled {
+                padding: 0.8rem 3rem;
+            }
+
+            .hero {
+                padding: 0 3rem;
+            }
+
+            .about-grid,
+            .books-grid,
+            .writing-grid,
+            .music-grid,
+            .connect-grid {
+                gap: 3rem;
+            }
+
+            .hero-title {
+                font-size: 4.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            * {
+                cursor: auto;
+            }
+
+            /* Disable custom cursor on mobile */
+            #cursor-glow,
+            #cursor-dot {
+                display: none;
+            }
+
+            .container {
+                padding: 4rem 1.5rem;
+            }
+
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            nav.scrolled {
+                padding: 0.8rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+                font-family: 'Space Mono', monospace;
+                cursor: pointer;
+                color: var(--gold);
+            }
+
+            .hero {
+                flex-direction: column;
+                justify-content: center;
+                padding: 6rem 1.5rem 2rem 1.5rem;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .hero-content {
+                width: 100%;
+                align-items: center;
+                text-align: center;
+                margin-bottom: 4rem;
+                z-index: 10;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .hero-line-sep {
+                transform-origin: center;
+                margin: 0 auto 3rem auto;
+            }
+
+            #layer-5 {
+                position: relative;
+                width: 100%;
+                transform: none;
+                top: 0;
+                right: 0;
+                margin-top: 2rem;
+            }
+
+            .book-3d {
+                transform: rotateY(-15deg) rotateX(5deg);
+            }
+
+            #layer-1 {
+                font-size: 45vw;
+                bottom: 5%;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portrait-frame {
+                margin: 0 auto;
+                max-width: 100%;
+            }
+
+            .about-quote-card {
+                margin-left: 0;
+                margin-top: -20px;
+            }
+
+            .about-content {
+                padding-left: 0;
+                margin-top: 2rem;
+            }
+
+            .stats-row {
+                flex-wrap: wrap;
+                gap: 2rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .poem-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .poem-line {
+                font-size: 1.2rem;
+            }
+
+            .writing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .writing-left {
+                padding-right: 0;
+            }
+
+            .writing-card {
+                padding: 3rem 2rem;
+            }
+
+            .music-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .record-container {
+                max-width: 100%;
+            }
+
+            .vinyl-record {
+                width: 280px;
+                height: 280px;
+            }
+
+            .album-label {
+                width: 100px;
+                height: 100px;
+            }
+
+            .connect-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .connect-title {
+                font-size: 3rem;
+            }
+
+            footer {
+                padding: 3rem 1.5rem;
+            }
+
+            .footer-top {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .f-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="noise-overlay"></div>
+
+    <div id="cursor-glow"></div>
+    <div id="cursor-dot"></div>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="logo magnetic">
+
+            <div class="logo-text cinzel">Room<span class="italic">for</span>Words</div>
+        </a>
+        <div class="nav-links">
+            <a href="#about" class="nav-link magnetic">Author</a>
+            <a href="#books" class="nav-link magnetic">Books</a>
+            <a href="#writing" class="nav-link magnetic">Writing</a>
+            <a href="#music" class="nav-link magnetic">Music</a>
+            <a href="#connect" class="nav-link magnetic">Connect</a>
+        </div>
+        <div class="hamburger">≡</div>
+    </nav>
+
+    <div class="mobile-menu">
+        <div class="close-menu">✕</div>
+        <a href="#about">Author</a>
+        <a href="#books">Books</a>
+        <a href="#writing">Writing</a>
+        <a href="#music">Music</a>
+        <a href="#connect">Connect</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div id="layer-1" class="parallax" data-speed="0.02">WORDS</div>
+        <div id="layer-2" class="parallax" data-speed="0.005">
+            <svg viewBox="0 0 100 100" fill="none" stroke="rgba(196,154,60,1)" stroke-width="0.5">
+                <path
+                    d="M50 10 L50 90 M50 10 Q30 5 10 20 L10 100 Q30 85 50 90 M50 10 Q70 5 90 20 L90 100 Q70 85 50 90" />
+            </svg>
+        </div>
+        <div id="layer-3" class="parallax" data-speed="0.01">
+            <span class="float-flower" style="top: 20%; left: 30%; font-size: 0.8rem; animation-delay: 0s;">✦</span>
+            <span class="float-flower" style="top: 60%; left: 15%; font-size: 1.2rem; animation-delay: -2s;">✿</span>
+            <span class="float-flower" style="top: 30%; right: 40%; font-size: 0.6rem; animation-delay: -5s;">✦</span>
+            <span class="float-flower" style="top: 80%; right: 20%; font-size: 1rem; animation-delay: -3s;">✿</span>
+        </div>
+
+        <div class="hero-content">
+            <div class="entry-tag space-mono uppercase">— RoomForWords · Est. 2026 —</div>
+            <h1 class="hero-title cormorant">
+                <span class="hero-line">Thoughts</span>
+                <span class="hero-line">find a</span>
+                <span class="hero-line"><span class="italic gold-text"
+                        style="color: var(--gold-bright);">home.</span></span>
+            </h1>
+            <p class="hero-subtitle">A space where emotions exist without correction.</p>
+            <div class="hero-byline uppercase">WRITTEN BY SHASHANK · THE UNSAID TONE</div>
+            <div class="hero-line-sep"></div>
+            <a href="#books" class="cta-btn magnetic">Discover the Story</a>
+        </div>
+
+        <div id="layer-5" class="parallax" data-speed="0.02"
+            style="right: 0; top: 0; transform: none; width: 60%; height: 100%; z-index: 0; pointer-events: none; align-items: center;">
+            <img src="logo-custom.jpg" alt="RoomForWords Light"
+                style="width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; opacity: 0.85; -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%); mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);">
+        </div>
+    </section>
+
+
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container about-grid">
+            <div class="about-left">
+                <div class="portrait-frame reveal">
+                    <img src="author.jpg" alt="Author"
+                        style="width: 100%; height: 100%; object-fit: cover; z-index: 2; position: relative;">
+                    <div class="frame-overlay"></div>
+                    <div class="corner c-tl"></div>
+                    <div class="corner c-tr"></div>
+                    <div class="corner c-bl"></div>
+                    <div class="corner c-br"></div>
+                    <div class="frame-txt-top">ROOMFORWORDS</div>
+                    <div class="frame-txt-bot">THE UNSAID TONE</div>
+                </div>
+                <div class="about-quote-card reveal">
+                    <div class="quote-mark">"</div>
+                    <div class="quote-text">Silence becomes the only place where the heart feels understood.</div>
+                    <div class="quote-attr">— Shashank</div>
+                </div>
+            </div>
+            <div class="about-content reveal">
+                <div class="section-tag">About the Author</div>
+                <h2 class="about-name cormorant cream-text">Shashank</h2>
+                <div class="about-pen">Writing as The Unsaid Tone</div>
+                <div class="about-rule"></div>
+                <p class="about-p">Shashank is the voice behind RoomForWords — a space built for thoughts that refused
+                    to stay quiet. He writes not to explain love, but to document it. Not to teach, but to let emotion
+                    exist without correction.</p>
+                <p class="about-p">His debut collection, <i>Why I Was Begging in Love</i>, was written during the months
+                    after heartbreak — from sleepless nights where memories replayed without permission, and a heart
+                    that kept asking questions the mind could never answer.</p>
+                <p class="about-p">These books are not a lesson. They are proof. Proof that he loved. That is all they
+                    need to be.</p>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-num counter" data-target="2">0</div>
+                        <div class="stat-label">Books Published</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num counter" data-target="1">0</div>
+                        <div class="stat-label">Song Released</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num counter" data-target="1">0</div>
+                        <div class="stat-label">Article Published</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num counter" data-target="2026">0</div>
+                        <div class="stat-label">First Edition</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Books Section -->
+    <section id="books" class="books-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="header-div">✦ ─────────── ✦</div>
+                <div class="section-tag" style="justify-content: center; margin-bottom: 1.5rem; letter-spacing: 0.1em;">
+                    LoveLIfe Series</div>
+                <h2 class="header-title cormorant cream-text">A story of love, loss, and becoming.</h2>
+                <div class="header-sub">Two books. One heart. The Boy Who Begged.</div>
+            </div>
+
+            <div class="bc-grid">
+                <!-- Book 1 Text -->
+                <div class="bc-col bc-col-left reveal">
+                    <div class="bc-badge">BOOK 01 OF 02</div>
+                    <h3 class="bc-title cormorant cream-text">Why I Was<br>Begging in Love</h3>
+                    <div class="bc-series">Part I · The Boy Who Begged</div>
+                    <p class="bc-desc">A raw documentation of the months after heartbreak. Written from sleepless nights
+                        and unanswered questions, this book captures the moment a heart breaks and the immediate
+                        aftermath of a love that was given but not returned.</p>
+                    <a href="https://play.google.com/redeem?code=4QGMWEL6H9AAT" target="_blank"
+                        class="gold-btn magnetic">Read on Google Play</a>
+                </div>
+
+                <!-- Center Books -->
+                <div class="bc-center reveal">
+                    <img src="book1.jpg" alt="Why I Was Begging in Love" class="bc-book-cover bc-book-1">
+                    <img src="book2.jpg" alt="The Beggar Stopped Begging for the Flower"
+                        class="bc-book-cover bc-book-2">
+                </div>
+
+                <!-- Book 2 Text -->
+                <div class="bc-col bc-col-right reveal">
+                    <div class="bc-badge">BOOK 02 OF 02</div>
+                    <h3 class="bc-title cormorant cream-text">The Beggar Stopped<br>Begging for the Flower</h3>
+                    <div class="bc-series">Part II · The Boy Who Begged</div>
+                    <p class="bc-desc">The continuation and conclusion of the emotional journey. This book explores
+                        acceptance, the quiet realization of self-worth, and the difficult but necessary process of
+                        letting go of the garden you once waited in.</p>
+                    <a href="https://play.google.com/redeem?code=ZN1M39FPXRT7U" target="_blank"
+                        class="gold-btn magnetic">Read on Google Play</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Poem Interlude -->
+    <section class="poem-section">
+        <div class="poem-bg-quote pq-left">"</div>
+        <div class="poem-bg-quote pq-right">"</div>
+
+        <div class="poem-content">
+            <div class="poem-tag">✦ A CLOSING VERSE ✦</div>
+
+            <div class="poem-line reveal" style="transition-delay: 0.1s">"She was a flower on the plant,"</div>
+            <div class="poem-line reveal" style="transition-delay: 0.2s">"and I was just a boy who didn't even know"
+            </div>
+            <div class="poem-line reveal" style="transition-delay: 0.3s">"the world could hold such beauty."</div>
+
+            <div class="poem-break"></div>
+
+            <div class="poem-line reveal" style="transition-delay: 0.4s">"I saw her one afternoon"</div>
+            <div class="poem-line reveal" style="transition-delay: 0.5s">"and kept looking at her with eyes full of
+                love,"</div>
+            <div class="poem-line reveal" style="transition-delay: 0.6s">"unaware of how fragile that beauty was."</div>
+
+            <div class="poem-break"></div>
+
+            <div class="poem-line reveal" style="transition-delay: 0.7s">"By evening, in my fear of losing her,"</div>
+            <div class="poem-line reveal" style="transition-delay: 0.8s">"I plucked her away with my own hands."</div>
+
+            <div class="poem-break"></div>
+
+            <div class="poem-line reveal" style="transition-delay: 0.9s">"Now she lives only in my memories—"</div>
+            <div class="poem-line reveal" style="transition-delay: 1.0s">"a flower pressed forever"</div>
+            <div class="poem-line reveal" style="transition-delay: 1.1s">"between the pages of my diary."</div>
+
+            <div class="poem-sig reveal" style="transition-delay: 1.3s">— Shashank</div>
+            <div class="poem-icon reveal" style="transition-delay: 1.5s">🌻</div>
+        </div>
+    </section>
+
+    <!-- Featured Writing -->
+    <section id="writing" class="writing-section">
+        <div class="container writing-grid">
+            <div class="writing-left reveal">
+                <div class="writing-tag">FEATURED WRITING</div>
+                <h2 class="writing-title cormorant">What the Tiger<span class="writing-title-italic">Never Said</span>
+                </h2>
+                <div class="writing-inspire uppercase">INSPIRED BY LIFE OF PI · YANN MARTEL</div>
+                <div class="writing-rule"></div>
+
+                <p class="writing-p">"There are things that never become words. Not because they don't exist — but
+                    because the world stops listening before they ever get the chance to speak."</p>
+                <p class="writing-p">"We live in a world that remembers survivors. Nobody remembers what survival cost.
+                    Everyone asked how the boy made it across the ocean. Nobody asked what the ocean made of me."</p>
+                <p class="writing-p">"Told from the perspective of Richard Parker — the Bengal tiger — this story
+                    reimagines the untold side of an unforgettable journey across the ocean."</p>
+                <a href="https://medium.com/@roomforwords.official/what-the-tiger-never-said-a635a1e263ca"
+                    target="_blank" class="cta-btn cta-btn-writing magnetic"
+                    style="margin-top: 1.5rem; display: inline-block;">Read
+                    Full Article on Medium</a>
+            </div>
+
+            <div class="writing-right reveal">
+                <div class="writing-card-container"
+                    style="padding: 0; border: 1px solid rgba(196,154,60,0.3); overflow: hidden;">
+                    <div class="writing-card"
+                        style="background-image: url('tiger.png'); background-size: cover; background-position: center; border-left: none; align-items: center; justify-content: center; position: relative;">
+                        <div
+                            style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,0.95), rgba(13,11,8,0.4));">
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Music Section -->
+    <section id="music" class="music-section">
+        <div class="container music-grid">
+            <div class="music-left reveal">
+                <div class="record-container">
+                    <div class="vinyl-record">
+                        <div class="album-label"
+                            style="background-image: url('song.jpg'); background-size: cover; background-position: center; border: 1px solid rgba(196,154,60,0.3); position: relative; overflow: hidden;">
+                            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3);"></div>
+                            <div
+                                style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                <div class="al-title uppercase"
+                                    style="color: var(--cream); text-shadow: 0 1px 3px rgba(0,0,0,0.9); margin-bottom: 0;">
+                                    THE BOY WHO BEGGED</div>
+                            </div>
+                            <div class="al-hole" style="z-index: 3;"></div>
+                        </div>
+                    </div>
+                    <div class="record-reflection"></div>
+                </div>
+            </div>
+
+            <div class="music-right reveal">
+                <div class="section-tag" style="margin-bottom: 1.5rem;">ORIGINAL MUSIC</div>
+                <h2 class="music-title cormorant cream-text">The Boy Who <span class="italic gold-text">Begged</span>
+                </h2>
+                <p class="music-desc">Beyond the written word — the emotion takes sound. A song born from the same heart
+                    that wrote these books.</p>
+
+                <div class="meta-grid">
+                    <div class="meta-item"><span>Project:</span>MyInnerTone</div>
+                    <div class="meta-item"><span>Presented by:</span>RoomForWords</div>
+                    <div class="meta-item"><span>Genre:</span>Emotional · Narrative</div>
+                    <div class="meta-item"><span>Year:</span>2026</div>
+                </div>
+
+                <audio id="songAudio" src="song.mp3" preload="metadata"></audio>
+                <div class="audio-player">
+                    <div class="player-top">
+                        <div class="play-pause-btn magnetic" id="playBtn">
+                            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                        <div class="song-info">
+                            <div class="si-title">The Boy Who Begged</div>
+                            <div class="si-meta">Shashank · Original · 2026</div>
+                        </div>
+                        <div class="song-time" id="timeDisplay">0:00 / 3:45</div>
+                    </div>
+
+                    <div class="progress-track" id="progressTrack">
+                        <div class="progress-fill" id="progressFill">
+                            <div class="progress-handle"></div>
+                        </div>
+                    </div>
+
+                    <div class="waveform-container" id="waveforms">
+                        <!-- Bars generated via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connect Section -->
+    <section id="connect" class="connect-section">
+        <div class="container connect-grid">
+            <div class="connect-left reveal">
+                <div class="c-bg-quote">"</div>
+                <div class="section-tag" style="margin-bottom: 1.5rem;">CONNECT</div>
+                <h2 class="connect-title cormorant cream-text">Your words<span>matter.</span></h2>
+                <p class="connect-p">If any line felt familiar — if any silence between words felt like yours — this
+                    space was made for you.</p>
+                <p class="connect-p">Reach out. Share your story. Or simply let Shashank know this reached you. Every
+                    response is read.</p>
+
+                <a href="mailto:roomforwords.official@gmail.com"
+                    class="email-link magnetic">roomforwords.official@gmail.com</a>
+
+                <div class="social-links">
+                    <a href="https://youtube.com/@roomforwords?si=bx9mIcf6iHUxgRoC" target="_blank"
+                        class="social-icon magnetic" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M21.582 6.186a2.506 2.506 0 0 0-1.766-1.766C18.258 4 12 4 12 4s-6.258 0-7.816.42a2.506 2.506 0 0 0-1.766 1.766C2 7.742 2 12 2 12s0 4.258.418 5.814a2.506 2.506 0 0 0 1.766 1.766C5.742 20 12 20 12 20s6.258 0 7.816-.42a2.506 2.506 0 0 0 1.766-1.766C22 16.258 22 12 22 12s0-4.258-.418-5.814zM9.99 15.484V8.516L15.96 12z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/room.for.words?utm_source=qr&igsh=MTBqNDdzZmRqMzQ2bw=="
+                        target="_blank" class="social-icon magnetic" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                    </a>
+                    <a href="https://pin.it/4CPSL5j8o" target="_blank" class="social-icon magnetic"
+                        aria-label="Pinterest">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.183 0 7.436 2.981 7.436 6.966 0 4.156-2.618 7.502-6.257 7.502-1.22 0-2.368-.634-2.763-1.385l-.752 2.871c-.272 1.04-1.01 2.336-1.505 3.13 1.185.365 2.451.56 3.761.56 6.621 0 11.988-5.368 11.988-11.988C24.005 5.367 18.638 0 12.017 0z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="connect-right reveal">
+                <div class="form-card">
+                    <h3 class="form-title cormorant cream-text">Leave a message</h3>
+                    <div class="form-sub">Your story deserves to be heard.</div>
+                    <div class="form-sep"></div>
+
+                    <form id="contactForm">
+                        <div class="field-group">
+                            <input type="text" id="name" class="form-input" placeholder=" " required>
+                            <label for="name" class="field-label">Name</label>
+                        </div>
+                        <div class="field-group">
+                            <input type="email" id="email" class="form-input" placeholder=" " required>
+                            <label for="email" class="field-label">Email</label>
+                        </div>
+                        <div class="field-group">
+                            <textarea id="message" class="form-input" rows="4" placeholder=" " required></textarea>
+                            <label for="message" class="field-label">Message</label>
+                        </div>
+                        <button type="submit" class="submit-btn magnetic">Send Message ✦</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-top">
+            <div class="f-logo">RoomForWords</div>
+            <div class="f-icon">🌻</div>
+            <div class="f-links">
+                <a href="#about" class="f-link">Author</a>
+                <a href="#books" class="f-link">Books</a>
+                <a href="#writing" class="f-link">Writing</a>
+                <a href="#music" class="f-link">Music</a>
+            </div>
+        </div>
+        <div class="f-divider"></div>
+        <div class="footer-bottom">
+            <div class="f-copy">© 2026 Shashank · RoomForWords · All Rights Reserved</div>
+            <div class="f-tagline">Thoughts Find a Home.</div>
+            <div class="f-pub">Published by Siddharam Dattkumar Kolle</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // 1. Custom Cursor
+        const cursorGlow = document.getElementById('cursor-glow');
+        const cursorDot = document.getElementById('cursor-dot');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let glowX = mouseX;
+        let glowY = mouseY;
+        let isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+        if (!isTouchDevice) {
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+            });
+
+            function animateCursor() {
+                glowX += (mouseX - glowX) * 0.12;
+                glowY += (mouseY - glowY) * 0.12;
+                cursorGlow.style.transform = `translate3d(${glowX}px, ${glowY}px, 0) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+        }
+
+        // 2. Particle Canvas
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const numParticles = window.innerWidth < 768 ? 40 : 80;
+
+        for (let i = 0; i < numParticles; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: 0.5 + Math.random() * 1.5,
+                s: 0.2 + Math.random() * 0.8, // speed
+                a: Math.random() * Math.PI * 2, // angle
+                baseOpacity: Math.random() * 0.7
+            });
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let p of particles) {
+                p.y -= p.s;
+                p.x += Math.sin(p.a) * 0.5;
+                p.a += 0.01;
+
+                // Opacity oscillation
+                let currentOpacity = (Math.sin(p.a * 2) + 1) / 2 * p.baseOpacity;
+
+                if (p.y < -10) {
+                    p.y = canvas.height + 10;
+                    p.x = Math.random() * canvas.width;
+                }
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(196,154,60, ${currentOpacity})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // 3. Magnetic Buttons
+        if (!isTouchDevice) {
+            const magnetics = document.querySelectorAll('.magnetic');
+            magnetics.forEach(btn => {
+                btn.addEventListener('mousemove', function (e) {
+                    const rect = this.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const deltaX = e.clientX - centerX;
+                    const deltaY = e.clientY - centerY;
+
+                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    if (distance < 80) {
+                        this.style.transform = `translate(${deltaX * 0.3}px, ${deltaY * 0.3}px)`;
+                    } else {
+                        this.style.transform = 'translate(0px, 0px)';
+                    }
+                });
+                btn.addEventListener('mouseleave', function () {
+                    this.style.transform = 'translate(0px, 0px)';
+                });
+            });
+        }
+
+        // 4. Scroll Reveal & Counters
+        const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+
+                    // Counter animation
+                    if (entry.target.classList.contains('counter') && !entry.target.dataset.animated) {
+                        entry.target.dataset.animated = "true";
+                        const target = parseInt(entry.target.dataset.target);
+                        const duration = 2000;
+                        let start = null;
+
+                        function step(timestamp) {
+                            if (!start) start = timestamp;
+                            const progress = timestamp - start;
+                            const percent = Math.min(progress / duration, 1);
+                            const easeOut = 1 - Math.pow(1 - percent, 4);
+
+                            entry.target.innerText = Math.floor(target * easeOut);
+
+                            if (progress < duration) {
+                                requestAnimationFrame(step);
+                            } else {
+                                entry.target.innerText = target;
+                            }
+                        }
+                        requestAnimationFrame(step);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal, .counter').forEach(el => observer.observe(el));
+
+        // 5. Parallax Hero
+        const hero = document.getElementById('hero');
+        const parallaxLayers = document.querySelectorAll('.parallax');
+
+        if (!isTouchDevice) {
+            hero.addEventListener('mousemove', (e) => {
+                const x = e.clientX - window.innerWidth / 2;
+                const y = e.clientY - window.innerHeight / 2;
+
+                parallaxLayers.forEach(layer => {
+                    const speed = parseFloat(layer.getAttribute('data-speed'));
+                    if (layer.classList.contains('book-3d-wrapper')) {
+                        // Maintain 3D transform while translating parent
+                        layer.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+                    } else {
+                        layer.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+                    }
+                });
+            });
+            hero.addEventListener('mouseleave', () => {
+                parallaxLayers.forEach(layer => {
+                    layer.style.transform = `translate(0px, 0px)`;
+                });
+            });
+        }
+
+        // 6. Nav Scroll Transparency
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // 7. Mobile Menu Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const closeMenu = document.querySelector('.close-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-menu a');
+
+        hamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+        closeMenu.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        });
+
+        // 8. Generate Waveforms
+        const wfContainer = document.getElementById('waveforms');
+        const numBars = 20;
+        for (let i = 0; i < numBars; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'waveform-bar';
+
+            // Create a bell curve intensity
+            const center = numBars / 2;
+            const dist = Math.abs(i - center);
+            const intensity = 1 - (dist / center); // 0 to 1
+
+            // Map intensity to height (12px to 44px)
+            const height = 12 + (intensity * 32) + (Math.random() * 10 - 5);
+            const duration = 0.4 + (Math.random() * 0.7);
+
+            bar.style.setProperty('--dance-h', `${height}px`);
+            bar.style.animationDuration = `${duration}s`;
+            wfContainer.appendChild(bar);
+        }
+
+        // 9. Audio Player Logic
+        const songAudio = document.getElementById('songAudio');
+        const playBtn = document.getElementById('playBtn');
+        const vinyl = document.querySelector('.vinyl-record');
+        const waveforms = document.querySelectorAll('.waveform-bar');
+        const progressFill = document.getElementById('progressFill');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const progressTrack = document.getElementById('progressTrack');
+
+        let isPlaying = false;
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function togglePlay() {
+            if (songAudio.paused) {
+                songAudio.play();
+                isPlaying = true;
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                vinyl.style.animationPlayState = 'running';
+                waveforms.forEach(bar => bar.classList.add('playing'));
+            } else {
+                songAudio.pause();
+                isPlaying = false;
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+                vinyl.style.animationPlayState = 'paused';
+                waveforms.forEach(bar => bar.classList.remove('playing'));
+            }
+        }
+
+        playBtn.addEventListener('click', togglePlay);
+
+        songAudio.addEventListener('timeupdate', () => {
+            const current = songAudio.currentTime;
+            const duration = songAudio.duration;
+            if (duration) {
+                const percent = (current / duration) * 100;
+                progressFill.style.width = `${percent}%`;
+                timeDisplay.innerText = `${formatTime(current)} / ${formatTime(duration)}`;
+            }
+        });
+
+        songAudio.addEventListener('loadedmetadata', () => {
+            timeDisplay.innerText = `0:00 / ${formatTime(songAudio.duration)}`;
+        });
+
+        songAudio.addEventListener('ended', () => {
+            isPlaying = false;
+            playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+            vinyl.style.animationPlayState = 'paused';
+            waveforms.forEach(bar => bar.classList.remove('playing'));
+            progressFill.style.width = `0%`;
+            timeDisplay.innerText = `0:00 / ${formatTime(songAudio.duration)}`;
+        });
+
+        progressTrack.addEventListener('click', (e) => {
+            const rect = progressTrack.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percent = clickX / rect.width;
+            if (songAudio.duration) {
+                songAudio.currentTime = percent * songAudio.duration;
+            }
+        });
+
+        // 10. Form Submission Feedback & Email Sending
+        const form = document.getElementById('contactForm');
+        const submitBtn = form.querySelector('.submit-btn');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Sending...';
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('message', document.getElementById('message').value);
+            formData.append('_subject', 'New Message from RoomForWords');
+            formData.append('_captcha', 'false');
+
+            fetch("https://formsubmit.co/ajax/roomforwords.official@gmail.com", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    submitBtn.innerText = '✓ Sent Successfully';
+                    submitBtn.style.color = 'var(--ink)';
+                    submitBtn.style.background = 'var(--gold)';
+
+                    setTimeout(() => {
+                        submitBtn.innerText = originalText;
+                        submitBtn.style.color = '';
+                        submitBtn.style.background = '';
+                        form.reset();
+                    }, 3000);
+                })
+                .catch(error => {
+                    submitBtn.innerText = 'Error. Try Again.';
+                    setTimeout(() => {
+                        submitBtn.innerText = originalText;
+                    }, 3000);
+                });
+        });
+    </script>
+</body>
+
+</html>
